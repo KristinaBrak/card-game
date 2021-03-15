@@ -1,12 +1,14 @@
 import { IonCard, IonImg } from "@ionic/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { CARD_COUNT, POKEMON_URL } from "../consts";
+import { POKEMON_URL } from "../consts";
 import usePokemonAPI from "../usePokemonAPI";
 import Card from "./Card";
 import { shuffleDeck, generateId } from "../utils/helpers";
 
 interface Props {
   scorePoints: () => void;
+  setFinished: () => void;
+  cardNumber: number;
 }
 
 export interface Pokemon {
@@ -20,8 +22,12 @@ interface Card {
   pokemon: Pokemon;
 }
 
-const CardDeck: React.FC<Props> = ({ scorePoints }) => {
-  const { data, loading, error } = usePokemonAPI(POKEMON_URL, CARD_COUNT / 2);
+const CardDeck: React.FC<Props> = ({
+  scorePoints,
+  setFinished,
+  cardNumber,
+}) => {
+  const { data, loading, error } = usePokemonAPI(POKEMON_URL, cardNumber / 2);
   const [cardDeck, setCardDeck] = useState<Card[]>();
   const [prevCardId, setPrevCardId] = useState<string | null>(null);
 
@@ -50,7 +56,7 @@ const CardDeck: React.FC<Props> = ({ scorePoints }) => {
     const updatedDeck = cardDeck?.map((card) =>
       card.id === id1 ? { ...card, isOpened: !card.isOpened } : card
     );
-    const secUpdatedDeck = cardDeck?.map((card) =>
+    const secUpdatedDeck = updatedDeck?.map((card) =>
       card.id === id2 ? { ...card, isOpened: !card.isOpened } : card
     );
     setCardDeck(secUpdatedDeck);
@@ -86,19 +92,6 @@ const CardDeck: React.FC<Props> = ({ scorePoints }) => {
       console.log("firstCard", id);
       setPrevCardId(id);
     }
-    // if (!openedCardId) {
-    //   setOpenedCardId(id);
-    // } else {
-    //   if (areCardsMatching(id)) {
-    //     console.log("matching");
-    //     calculateScore();
-    //   } else {
-    //     console.log("not matching");
-    //     setOpenedCardId(null);
-    //   }
-    //   turnOverCard(openedCardId);
-    //   turnOverCard(id);
-    // }
   };
 
   if (loading) {
@@ -118,21 +111,6 @@ const CardDeck: React.FC<Props> = ({ scorePoints }) => {
         flexWrap: "wrap",
       }}
     >
-      {/* {pokemonDeck?.map(({ name, url }, index) => (
-        <Card
-          key={`${name}-${index}`}
-          onOpen={() => {
-            setOpenedCard(`${name}-${index}`);
-          }}
-        >
-          <IonImg
-            src={url}
-            alt={name}
-            key={`${name}-${index}`}
-            onClick={scorePoints}
-          />
-        </Card>
-      ))} */}
       {cardDeck?.map(({ id, isOpened, pokemon: { url } }) => (
         <Card
           key={id}
