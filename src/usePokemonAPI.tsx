@@ -12,7 +12,6 @@ const usePokemonAPI = (url: string, limit: number) => {
         return response.json();
       })
       .then((result) => {
-        console.log({ result });
 
         const pokemon: Pokemon = {
           name: result.name.toString(),

@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 export const shuffleDeck = <T>(list: T[]) => {
   const newList: T[] = [...list];
   for (let currentIndex = list.length - 1; currentIndex > 0; currentIndex--) {
@@ -8,4 +10,8 @@ export const shuffleDeck = <T>(list: T[]) => {
     ];
   }
   return newList;
+};
+
+export const generateId = () => {
+  return uuid();
 };

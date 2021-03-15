@@ -5,16 +5,19 @@ interface CardProps {
   key: string;
   children: any;
   onOpen: () => void;
+  isOpened: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ key, children, onOpen }) => {
+const Card: React.FC<CardProps> = ({ children, onOpen, isOpened }) => {
   return (
     <IonCard
-      key={key}
       style={{ width: "80px", height: "80px" }}
-      onClick={onOpen}
+      onClick={(event) => {
+        event.preventDefault();
+        onOpen();
+      }}
     >
-      {children}
+      {isOpened ? children : null}
     </IonCard>
   );
 };
