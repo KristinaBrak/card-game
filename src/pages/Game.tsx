@@ -7,15 +7,17 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
 import CardDeck from "../components/CardDeck";
 import PausedWindow from "../components/PausedWindow";
 import "./Home.css";
-import { SCORE_POINTS } from "../consts";
 
 const Game: React.FC = () => {
   const [score, setScore] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [finished, setFinished] = useState(false);
+  const level = useSelector(levelDifficultySelector);
 
   const calculateTime = () => {
     return timeLeft - 1;
@@ -35,7 +37,7 @@ const Game: React.FC = () => {
   });
 
   const calculateScore = () => {
-    return timeLeft * SCORE_POINTS.easy.timeMultiply + score;
+    return timeLeft * level.timeMultiply + score;
   };
 
   return (
@@ -49,9 +51,9 @@ const Game: React.FC = () => {
         <IonTitle>Time left: {timeLeft}s</IonTitle>
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck
-          scorePoints={() => setScore(score + SCORE_POINTS.easy.pointValue)}
+          scorePoints={() => setScore(score + level.pointValue)}
           setFinished={() => setFinished(true)}
-          cardNumber={SCORE_POINTS.easy.cardNumber}
+          cardNumber={level.cardCount}
         />
         <IonButton onClick={() => setIsPaused(true)}>Pause</IonButton>
         {isPaused && <PausedWindow returnToGame={() => setIsPaused(false)} />}

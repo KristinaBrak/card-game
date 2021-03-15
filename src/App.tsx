@@ -1,3 +1,6 @@
+import React from "react";
+import { Provider } from "react-redux";
+import store from "./redux-store/store";
 import { Redirect, Route } from "react-router-dom";
 import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
@@ -27,25 +30,27 @@ import "./theme/variables.css";
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/game-start">
-          <GameStartingWindow />
-        </Route>
-        <Route exact path="/game">
-          <Game />
-        </Route>
-        <Route exact path="/leader-board">
-          <LeaderBoard />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <Provider store={store}>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/game-start">
+            <GameStartingWindow />
+          </Route>
+          <Route exact path="/game">
+            <Game />
+          </Route>
+          <Route exact path="/leader-board">
+            <LeaderBoard />
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </Provider>
   </IonApp>
 );
 
