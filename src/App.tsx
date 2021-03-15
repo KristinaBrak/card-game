@@ -3,6 +3,7 @@ import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
+import GameStartingWindow from "./pages/GameStartingWindow";
 import LeaderBoard from "./components/LeaderBoard";
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,6 +31,9 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/home">
           <Home />
+        </Route>
+        <Route exact path="/game-start">
+          <GameStartingWindow />
         </Route>
         <Route exact path="/game">
           <Game />

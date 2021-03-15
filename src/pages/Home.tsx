@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonButton href="/game">Play</IonButton>
+        <IonButton href="/game-start">Play</IonButton>
         <IonButton href="/leader-board">Leader Board</IonButton>
         <IonButton>Exit</IonButton>
       </IonContent>
