@@ -32,10 +32,6 @@ const Game: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(gameTimeLeft);
 
   useEffect(() => {
-    dispatch(setTimeLeft(timeLeft));
-  }, [isGameStarted, isPaused]);
-
-  useEffect(() => {
     if (!isPaused && !finished) {
       const timer = setTimeout(() => {
         setTimeLeft(calculateTime());
