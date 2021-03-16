@@ -7,7 +7,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
 import GameStartingWindow from "./pages/GameStartingWindow";
-import LeaderBoard from "./components/LeaderBoard";
+import LeaderBoard from "./pages/LeaderBoard";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -27,6 +27,7 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import GameOverWindow from "./pages/GameOverWindow";
 
 const App: React.FC = () => (
   <IonApp>
@@ -44,6 +45,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/leader-board">
             <LeaderBoard />
+          </Route>
+          <Route exact path="/game-over">
+            <GameOverWindow />
           </Route>
           <Route exact path="/">
             <Redirect to="/home" />
