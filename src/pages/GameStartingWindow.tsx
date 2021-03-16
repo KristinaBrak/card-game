@@ -31,7 +31,7 @@ const GameStartingWindow = () => {
   const saveCurrentUser = () => {
     const foundUser = userList.find((user) => user.name === playerName);
     if (!foundUser) {
-      const newUser: User = { name: playerName, isCurrent: true };
+      const newUser: User = { name: playerName, isCurrent: true, score: 0 };
       dispatch(addUser(newUser));
     } else {
       dispatch(setCurrentUser(playerName));

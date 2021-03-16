@@ -35,7 +35,7 @@ const CardDeck: React.FC<Props> = ({
     const pokemons = data.concat(data);
     const cards: Card[] = pokemons.map((pokemon) => ({
       id: generateId(),
-      isOpened: false,
+      isOpened: true,
       pokemon,
     }));
     setCardDeck(shuffleDeck(cards));
