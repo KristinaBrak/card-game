@@ -7,23 +7,33 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
+import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
 import CardDeck from "../components/CardDeck";
 import PausedWindow from "../components/PausedWindow";
 import "./Home.css";
+import { fileURLToPath } from "url";
 
 const Game: React.FC = () => {
   const [score, setScore] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [isGameStarted, setIsGameStarted] = useState(false);
+
   const level = useSelector(levelDifficultySelector);
+  const gameTimeLeft = useSelector(timeLeftSelector);
+  const dispatch = useDispatch();
 
   const calculateTime = () => {
     return timeLeft - 1;
   };
 
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(gameTimeLeft);
+
+  useEffect(() => {
+    dispatch(setTimeLeft(timeLeft));
+  }, [isGameStarted, isPaused]);
 
   useEffect(() => {
     if (!isPaused && !finished) {
@@ -35,6 +45,11 @@ const Game: React.FC = () => {
       };
     }
   });
+
+  const pauseGame = () => {
+    setIsPaused(true);
+    dispatch(setTimeLeft(timeLeft));
+  };
 
   const calculateScore = () => {
     return timeLeft * level.timeMultiply + score;
