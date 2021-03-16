@@ -61,7 +61,6 @@ const { reducer: levelReducer, actions } = createSlice({
   reducers: {
     changeDifficulty: (state, { payload }: PayloadAction<string>) => {
       state.definition = getLevelDifficultyDefinition(payload);
-      console.log(state.definition.cardCount);
     },
   },
 });
