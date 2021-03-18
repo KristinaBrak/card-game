@@ -1,4 +1,4 @@
-import { IonCard, IonImg } from "@ionic/react";
+import { IonCard, IonImg, IonItem } from "@ionic/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { POKEMON_URL } from "../consts";
 import usePokemonAPI from "../usePokemonAPI";
@@ -12,24 +12,44 @@ import {
 } from "../redux-store/card-deck/cardDeck.slice";
 import { cardDeckSelector } from "../redux-store/card-deck/cardDeck.selector";
 
-interface Props {
-  scorePoints: () => void;
-  setGameFinished: () => void;
-}
-
 export interface Pokemon {
   name: string;
   url: string;
 }
 
+interface Props {
+  scorePoints: () => void;
+  setGameFinished: () => void;
+}
+
 const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
   const level = useSelector(levelDifficultySelector);
-  const dispatch = useDispatch();
   const { cardState, cards: cardDeck } = useSelector(cardDeckSelector);
+  const dispatch = useDispatch();
+  const [prevCard, setPrevCard] = useState<Card | undefined>(undefined);
 
   useEffect(() => {
     dispatch(fetchPokemons(level.cardCount));
   }, []);
+
+  const calculateScore = (id: Card["id"], type: Card["type"]) => {
+    if (prevCard && type === prevCard.type) {
+      scorePoints();
+    }
+  };
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLIonCardElement, MouseEvent>,
+    card: Card
+  ) => {
+    event.preventDefault();
+    if (!prevCard) {
+      setPrevCard(card);
+    } else {
+      calculateScore(card.id, card.type);
+      setPrevCard(undefined);
+    }
+  };
 
   if (cardState === "loading") {
     return <div>loading</div>;
@@ -48,16 +68,15 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
         flexWrap: "wrap",
       }}
     >
-      {cardDeck.map(({ id, type, isOpened, backImage, frontImage }) => (
+      {cardDeck.map((card) => (
         <IonCard
-          key={id}
-          className={type}
+          key={card.id}
           style={{ width: "80px", height: "80px" }}
           onClick={(event) => {
-            event.preventDefault();
+            handleClick(event, card);
           }}
         >
-          <IonImg src={frontImage} />
+          <IonImg src={card.frontImage} />
         </IonCard>
       ))}
     </div>
