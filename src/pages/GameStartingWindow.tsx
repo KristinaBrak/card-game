@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
   changeDifficulty,
+  Difficulty,
   LevelDefinition,
 } from "../redux-store/level-difficulty/levelDifficulty.slice";
 import {
@@ -60,9 +61,11 @@ const GameStartingWindow = () => {
           />
         </IonItem>
         <IonItem disabled={!!!playerName}>
-          <IonButton onClick={() => openGame("easy")}>Easy</IonButton>
-          <IonButton onClick={() => openGame("medium")}>Medium</IonButton>
-          <IonButton onClick={() => openGame("hard")}>Hard</IonButton>
+          <IonButton onClick={() => openGame(Difficulty.EASY)}>Easy</IonButton>
+          <IonButton onClick={() => openGame(Difficulty.MEDIUM)}>
+            Medium
+          </IonButton>
+          <IonButton onClick={() => openGame(Difficulty.HARD)}>Hard</IonButton>
         </IonItem>
       </IonContent>
     </IonPage>

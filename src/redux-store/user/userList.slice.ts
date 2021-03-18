@@ -7,13 +7,13 @@ export interface User {
 }
 
 const initialState: User[] = [
-  { name: "Lola", isCurrent: false, score: 420 },
+  { name: "Lola", isCurrent: true, score: 420 },
   { name: "Vova", isCurrent: false, score: 456 },
   { name: "Shrek", isCurrent: false, score: 1006 },
 ];
 
 const { reducer: currentUserReducer, actions } = createSlice({
-  name: "UserList",
+  name: "userList",
   initialState,
   reducers: {
     addUser: (state, { payload }: PayloadAction<User>) => {
@@ -29,7 +29,9 @@ const { reducer: currentUserReducer, actions } = createSlice({
     },
     setCurrentUser: (state, { payload }: PayloadAction<User["name"]>) => {
       state.map((user) =>
-        user.name === payload ? { ...user, isCurrent: true } : user
+        user.name === payload
+          ? { ...user, isCurrent: true }
+          : { ...user, isCurrent: false }
       );
     },
   },
