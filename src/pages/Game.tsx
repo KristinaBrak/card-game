@@ -8,48 +8,28 @@ import {
 } from "@ionic/react";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
 import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
+import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
 import CardDeck from "../components/CardDeck";
 import PausedWindow from "../components/PausedWindow";
 import "./Home.css";
-import { fileURLToPath } from "url";
+import Timer from "../components/Timer";
+import usePokemonAPI from "../usePokemonAPI";
+import { POKEMON_URL } from "../consts";
+import { cardDeckSelector } from "../redux-store/card-deck/cardDeck.selector";
+import {
+  Card,
+  fetchPokemons,
+  setCardDeck,
+} from "../redux-store/card-deck/cardDeck.slice";
+import { generateId, shuffleDeck } from "../utils/helpers";
 
 const Game: React.FC = () => {
+  const level = useSelector(levelDifficultySelector);
+
   const [score, setScore] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [isGameStarted, setIsGameStarted] = useState(false);
-
-  const level = useSelector(levelDifficultySelector);
-  const gameTimeLeft = useSelector(timeLeftSelector);
-  const dispatch = useDispatch();
-
-  const calculateTime = () => {
-    return timeLeft - 1;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(gameTimeLeft);
-
-  useEffect(() => {
-    if (!isPaused && !finished) {
-      const timer = setTimeout(() => {
-        setTimeLeft(calculateTime());
-      }, 1000);
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  });
-
-  const pauseGame = () => {
-    setIsPaused(true);
-    dispatch(setTimeLeft(timeLeft));
-  };
-
-  const calculateScore = () => {
-    return timeLeft * level.timeMultiply + score;
-  };
 
   return (
     <IonPage>
@@ -59,12 +39,11 @@ const Game: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonTitle>Time left: {timeLeft}s</IonTitle>
+        {/* <Timer isPaused={isPaused} isFinished={finished} /> */}
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck
           scorePoints={() => setScore(score + level.pointValue)}
-          setFinished={() => setFinished(true)}
-          cardNumber={level.cardCount}
+          setGameFinished={() => setFinished(true)}
         />
         <IonButton onClick={() => setIsPaused(true)}>Pause</IonButton>
         {isPaused && <PausedWindow returnToGame={() => setIsPaused(false)} />}

@@ -2,13 +2,19 @@ import { IonCard, IonImg } from "@ionic/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { POKEMON_URL } from "../consts";
 import usePokemonAPI from "../usePokemonAPI";
-import Card from "./Card";
 import { shuffleDeck, generateId } from "../utils/helpers";
+import { useSelector, useDispatch } from "react-redux";
+import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
+import {
+  Card,
+  fetchPokemons,
+  setCardDeck,
+} from "../redux-store/card-deck/cardDeck.slice";
+import { cardDeckSelector } from "../redux-store/card-deck/cardDeck.selector";
 
 interface Props {
   scorePoints: () => void;
-  setFinished: () => void;
-  cardNumber: number;
+  setGameFinished: () => void;
 }
 
 export interface Pokemon {
@@ -16,90 +22,21 @@ export interface Pokemon {
   url: string;
 }
 
-interface Card {
-  id: string;
-  isOpened: boolean;
-  pokemon: Pokemon;
-}
+const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
+  const level = useSelector(levelDifficultySelector);
+  const dispatch = useDispatch();
+  const { cardState, cards: cardDeck } = useSelector(cardDeckSelector);
 
-const CardDeck: React.FC<Props> = ({
-  scorePoints,
-  setFinished,
-  cardNumber,
-}) => {
-  const { data, loading, error } = usePokemonAPI(POKEMON_URL, cardNumber / 2);
-  const [cardDeck, setCardDeck] = useState<Card[]>();
-  const [prevCardId, setPrevCardId] = useState<string | null>(null);
+  useEffect(() => {
+    dispatch(fetchPokemons(level.cardCount));
+  }, []);
 
-  useMemo(() => {
-    const pokemons = data.concat(data);
-    const cards: Card[] = pokemons.map((pokemon) => ({
-      id: generateId(),
-      isOpened: true,
-      pokemon,
-    }));
-    setCardDeck(shuffleDeck(cards));
-  }, [data]);
-
-  const calculateScore = () => {
-    scorePoints();
-  };
-
-  const turnOverCard = (id: string) => {
-    const updatedDeck = cardDeck?.map((card) =>
-      card.id === id ? { ...card, isOpened: !card.isOpened } : card
-    );
-    setCardDeck(updatedDeck);
-  };
-
-  const turnOverCards = (id1: string, id2?: string) => {
-    const updatedDeck = cardDeck?.map((card) =>
-      card.id === id1 ? { ...card, isOpened: !card.isOpened } : card
-    );
-    const secUpdatedDeck = updatedDeck?.map((card) =>
-      card.id === id2 ? { ...card, isOpened: !card.isOpened } : card
-    );
-    setCardDeck(secUpdatedDeck);
-  };
-
-  const areCardsMatching = (id: string): boolean => {
-    const secondCard = cardDeck?.find(
-      (card) => card.id === id && card.isOpened
-    );
-    const firstCard = cardDeck?.find(
-      (card) => card.id === prevCardId && card.isOpened
-    );
-    if (firstCard && secondCard) {
-      return firstCard.pokemon.name === secondCard.pokemon.name;
-    }
-    return false;
-  };
-
-  const handleCardOpen = (id: string) => {
-    turnOverCard(id);
-    if (prevCardId) {
-      console.log("secondCard", id);
-      if (!areCardsMatching(id)) {
-        console.log("not maching");
-        turnOverCards(id, prevCardId);
-      } else {
-        calculateScore();
-        console.log("match");
-      }
-
-      setPrevCardId(null);
-    } else {
-      console.log("firstCard", id);
-      setPrevCardId(id);
-    }
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (cardState === "loading") {
+    return <div>loading</div>;
   }
 
-  if (error || !data) {
-    return <div>Error</div>;
+  if (cardState === "error" && cardDeck === []) {
+    return <div>error</div>;
   }
 
   return (
@@ -111,16 +48,17 @@ const CardDeck: React.FC<Props> = ({
         flexWrap: "wrap",
       }}
     >
-      {cardDeck?.map(({ id, isOpened, pokemon: { url } }) => (
-        <Card
+      {cardDeck.map(({ id, type, isOpened, backImage, frontImage }) => (
+        <IonCard
           key={id}
-          onOpen={() => {
-            handleCardOpen(id);
+          className={type}
+          style={{ width: "80px", height: "80px" }}
+          onClick={(event) => {
+            event.preventDefault();
           }}
-          isOpened={isOpened}
         >
-          <IonImg src={url} key={id} />
-        </Card>
+          <IonImg src={frontImage} />
+        </IonCard>
       ))}
     </div>
   );
