@@ -1,16 +1,35 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = 60;
+interface TimeLeft {
+  startTime: number;
+
+  timeSpent: number;
+}
+const initialState: TimeLeft = { startTime: 0, timeSpent: 0 };
 
 const { reducer: timeLeftReducer, actions } = createSlice({
   name: "timeLeft",
   initialState,
   reducers: {
-    setTimeLeft: (state, { payload }: PayloadAction<number>) => {
-      state = payload;
+    start: (state) => {
+      const currentTime = new Date().getTime();
+      state.startTime = currentTime;
+    },
+    pause: (state) => {
+      const currentTime = new Date().getTime();
+      state.timeSpent = state.startTime - currentTime;
+    },
+    resume: (state) => {
+      const currentTime = new Date().getTime();
+      state.startTime = currentTime + state.timeSpent;
+      state.timeSpent = 0;
+    },
+    reset: (state) => {
+      state.startTime = 0;
+      state.timeSpent = 0;
     },
   },
 });
 
-export const { setTimeLeft } = actions;
+export const { start, pause, resume, reset } = actions;
 export default timeLeftReducer;

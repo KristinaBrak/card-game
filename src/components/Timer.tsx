@@ -9,6 +9,12 @@ import {
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
 import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
+import {
+  pause,
+  reset,
+  resume,
+  start,
+} from "../redux-store/time-left/timeLeft.slice";
 
 interface TimerProps {
   isPaused: boolean;
@@ -16,30 +22,37 @@ interface TimerProps {
 }
 
 const Timer: React.FC<TimerProps> = ({ isPaused, isFinished }) => {
-  const gameTimeLeft = useSelector(timeLeftSelector);
+  const gameTime = useSelector(timeLeftSelector);
   const dispatch = useDispatch();
-  const [timeLeft, setTimeLeft] = useState(gameTimeLeft);
+  const [timeLeft, setTimeLeft] = useState<number>();
 
-  const decrementTime = () => {
-    return timeLeft - 1;
+  const getTimeLeft = () => {
+    const time = new Date().getTime() - gameTime.startTime;
+    return 60 - Math.floor(time / 1000);
   };
+
+  useEffect(() => {
+    dispatch(start());
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) {
+      dispatch(pause());
+    } else {
+      dispatch(resume());
+    }
+  }, [isPaused]);
 
   useEffect(() => {
     if (!isPaused && !isFinished) {
       const timer = setTimeout(() => {
-        setTimeLeft(decrementTime());
+        setTimeLeft(getTimeLeft());
       }, 1000);
       return () => {
         clearTimeout(timer);
       };
     }
   });
-
-  useEffect(() => {
-    if (isPaused || isFinished) {
-      dispatch(setTimeLeft(timeLeft));
-    }
-  }, [isPaused, isFinished]);
 
   return <IonTitle>Time left: {timeLeft}</IonTitle>;
 };

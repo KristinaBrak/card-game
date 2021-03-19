@@ -32,7 +32,7 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
     dispatch(fetchPokemons(level.cardCount));
   }, []);
 
-  const calculateScore = (id: Card["id"], type: Card["type"]) => {
+  const calculateScore = (type: Card["type"]) => {
     if (prevCard && type === prevCard.type) {
       scorePoints();
     }
@@ -46,7 +46,7 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
     if (!prevCard) {
       setPrevCard(card);
     } else {
-      calculateScore(card.id, card.type);
+      calculateScore(card.type);
       setPrevCard(undefined);
     }
   };
