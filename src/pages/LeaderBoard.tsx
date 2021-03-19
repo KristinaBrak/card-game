@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { userListSelector } from "../redux-store/user/userList.selector";
 
 const LeaderBoard = () => {
-  const userList = useSelector(userListSelector);
+  const { userList } = useSelector(userListSelector);
   const sortedUserList = [...userList].sort((a, b) => b.score - a.score);
 
   return (

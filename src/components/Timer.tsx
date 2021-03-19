@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DELAY_TIME_SEC, GAME_TIME_SEC } from "../consts";
 import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
-import { pause, resume, start } from "../redux-store/time-left/timeLeft.slice";
+import {
+  pause,
+  resume,
+  start,
+  stop,
+} from "../redux-store/time-left/timeLeft.slice";
 
 interface TimerProps {
   isPaused: boolean;
@@ -21,8 +26,8 @@ const Timer: React.FC<TimerProps> = ({
   const [timeLeft, setTimeLeft] = useState<number>();
 
   const getTimeLeft = () => {
-    const time = new Date().getTime() - gameTime.startTime;
-    return GAME_TIME_SEC + DELAY_TIME_SEC - Math.floor(time / 1000);
+    const time = new Date().getTime() - gameTime.time.startTime;
+    return 60 - Math.floor(time / 1000);
   };
 
   useEffect(() => {
@@ -38,6 +43,12 @@ const Timer: React.FC<TimerProps> = ({
   }, [isPaused]);
 
   useEffect(() => {
+    if (isFinished) {
+      dispatch(stop());
+    }
+  }, [isFinished]);
+
+  useEffect(() => {
     if (!isPaused && !isFinished) {
       const timer = setTimeout(() => {
         setTimeLeft(getTimeLeft());
@@ -50,6 +61,7 @@ const Timer: React.FC<TimerProps> = ({
 
   useEffect(() => {
     if (timeLeft && timeLeft <= 0) {
+      dispatch(stop());
       setGameFinished();
     }
   }, [timeLeft]);

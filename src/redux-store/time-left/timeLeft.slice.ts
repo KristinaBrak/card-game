@@ -1,15 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface TimeLeft {
+interface TimeCounter {
   startTime: number;
   timeSpent: number;
 }
 
+interface TimeLeft {
+  time: TimeCounter;
+}
+
 const roundTime = (time: number) => {
-  return Math.ceil(time / 1000) * 1000;
+  return Math.floor(time / 1000) * 1000;
 };
 
-const initialState: TimeLeft = { startTime: 0, timeSpent: 0 };
+const initialState: TimeLeft = {
+  time: { startTime: 0, timeSpent: 0 },
+};
 
 const { reducer: timeLeftReducer, actions } = createSlice({
   name: "timeLeft",
@@ -17,23 +23,27 @@ const { reducer: timeLeftReducer, actions } = createSlice({
   reducers: {
     start: (state) => {
       const currentTime = new Date().getTime();
-      state.startTime = roundTime(currentTime);
+      state.time.startTime = roundTime(currentTime);
     },
     pause: (state) => {
       const currentTime = new Date().getTime();
-      state.timeSpent = roundTime(state.startTime - currentTime);
+      state.time.timeSpent = roundTime(state.time.startTime - currentTime);
     },
     resume: (state) => {
       const currentTime = new Date().getTime();
-      state.startTime = roundTime(currentTime + state.timeSpent);
-      state.timeSpent = 0;
+      state.time.startTime = roundTime(currentTime + state.time.timeSpent);
+      state.time.timeSpent = 0;
     },
     reset: (state) => {
-      state.startTime = 0;
-      state.timeSpent = 0;
+      state.time.startTime = 0;
+      state.time.timeSpent = 0;
+    },
+    stop: (state) => {
+      const result = roundTime(new Date().getTime());
+      state.time.timeSpent = result - state.time.startTime;
     },
   },
 });
 
-export const { start, pause, resume, reset } = actions;
+export const { start, pause, resume, reset, stop } = actions;
 export default timeLeftReducer;

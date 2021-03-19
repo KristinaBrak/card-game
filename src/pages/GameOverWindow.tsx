@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userListSelector } from "../redux-store/user/userList.selector";
 
 const GameOverWindow = () => {
-  const userList = useSelector(userListSelector);
+  const { userList } = useSelector(userListSelector);
   const currentUser = userList.find((user) => user.isCurrent);
   return (
     <IonPage>

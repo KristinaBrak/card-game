@@ -25,7 +25,7 @@ import { userListSelector } from "../redux-store/user/userList.selector";
 
 const GameStartingWindow = () => {
   const [playerName, setPlayerName] = useState<string>("");
-  const userList = useSelector(userListSelector);
+  const { userList } = useSelector(userListSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 
