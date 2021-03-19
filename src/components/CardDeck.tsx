@@ -20,9 +20,14 @@ export interface Pokemon {
 interface Props {
   scorePoints: () => void;
   setGameFinished: () => void;
+  isGamePaused: boolean;
 }
 
-const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
+const CardDeck: React.FC<Props> = ({
+  scorePoints,
+  setGameFinished,
+  isGamePaused,
+}) => {
   const level = useSelector(levelDifficultySelector);
   const { cardState, cards: cardDeck } = useSelector(cardDeckSelector);
   const dispatch = useDispatch();
@@ -38,6 +43,13 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
     }
   };
 
+  const updateDeck = (type: Card["type"]) => {
+    const updatedCards = cardDeck.map((card) =>
+      card.type === type ? { ...card, isOpened: false } : card
+    );
+    dispatch(setCardDeck(updatedCards));
+  };
+
   const handleClick = (
     event: React.MouseEvent<HTMLIonCardElement, MouseEvent>,
     card: Card
@@ -47,6 +59,7 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
       setPrevCard(card);
     } else {
       calculateScore(card.type);
+      updateDeck(card.type);
       setPrevCard(undefined);
     }
   };
