@@ -48,6 +48,7 @@ const Game: React.FC = () => {
         <Timer
           isPaused={state === "paused"}
           isFinished={state === "finished"}
+          setGameFinished={setGameFinished}
         />
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck
