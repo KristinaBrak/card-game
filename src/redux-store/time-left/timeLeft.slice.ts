@@ -2,9 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface TimeLeft {
   startTime: number;
-
   timeSpent: number;
 }
+
+const roundTime = (time: number) => {
+  return Math.ceil(time / 1000) * 1000;
+};
+
 const initialState: TimeLeft = { startTime: 0, timeSpent: 0 };
 
 const { reducer: timeLeftReducer, actions } = createSlice({
@@ -13,15 +17,15 @@ const { reducer: timeLeftReducer, actions } = createSlice({
   reducers: {
     start: (state) => {
       const currentTime = new Date().getTime();
-      state.startTime = currentTime;
+      state.startTime = roundTime(currentTime);
     },
     pause: (state) => {
       const currentTime = new Date().getTime();
-      state.timeSpent = state.startTime - currentTime;
+      state.timeSpent = roundTime(state.startTime - currentTime);
     },
     resume: (state) => {
       const currentTime = new Date().getTime();
-      state.startTime = currentTime + state.timeSpent;
+      state.startTime = roundTime(currentTime + state.timeSpent);
       state.timeSpent = 0;
     },
     reset: (state) => {
