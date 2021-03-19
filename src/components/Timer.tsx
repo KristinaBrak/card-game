@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonTitle } from "@ionic/react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
-import {
-  pause,
-  reset,
-  resume,
-  start,
-} from "../redux-store/time-left/timeLeft.slice";
+import { pause, resume, start } from "../redux-store/time-left/timeLeft.slice";
 
 interface TimerProps {
   isPaused: boolean;
@@ -28,7 +16,7 @@ const Timer: React.FC<TimerProps> = ({ isPaused, isFinished }) => {
 
   const getTimeLeft = () => {
     const time = new Date().getTime() - gameTime.startTime;
-    return 60 - Math.floor(time / 1000);
+    return 63 - Math.floor(time / 1000);
   };
 
   useEffect(() => {

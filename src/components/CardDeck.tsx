@@ -20,14 +20,9 @@ export interface Pokemon {
 interface Props {
   scorePoints: () => void;
   setGameFinished: () => void;
-  isGamePaused: boolean;
 }
 
-const CardDeck: React.FC<Props> = ({
-  scorePoints,
-  setGameFinished,
-  isGamePaused,
-}) => {
+const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
   const level = useSelector(levelDifficultySelector);
   const { cardState, cards: cardDeck } = useSelector(cardDeckSelector);
   const dispatch = useDispatch();
@@ -37,6 +32,25 @@ const CardDeck: React.FC<Props> = ({
     dispatch(fetchPokemons(level.cardCount));
   }, []);
 
+  const isGameFinished = () => {
+    if (cardDeck.length > 0) {
+      const count = cardDeck.reduce((acc, card) => {
+        if (!card.isOpened) {
+          acc += 1;
+        }
+        return acc;
+      }, 0);
+      return count === cardDeck.length;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (isGameFinished()) {
+      setGameFinished();
+    }
+  }, [cardDeck]);
+
   const calculateScore = (type: Card["type"]) => {
     if (prevCard && type === prevCard.type) {
       scorePoints();
@@ -44,10 +58,12 @@ const CardDeck: React.FC<Props> = ({
   };
 
   const updateDeck = (type: Card["type"]) => {
-    const updatedCards = cardDeck.map((card) =>
-      card.type === type ? { ...card, isOpened: false } : card
-    );
-    dispatch(setCardDeck(updatedCards));
+    if (prevCard && type === prevCard.type) {
+      const updatedCards = cardDeck.map((card) =>
+        card.type === type ? { ...card, isOpened: false } : card
+      );
+      dispatch(setCardDeck(updatedCards));
+    }
   };
 
   const handleClick = (

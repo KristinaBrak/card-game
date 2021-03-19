@@ -53,7 +53,6 @@ const Game: React.FC = () => {
         <CardDeck
           scorePoints={calculateCardScore}
           setGameFinished={setGameFinished}
-          isGamePaused={state === "paused"}
         />
         <IonButton onClick={pauseGame}>Pause</IonButton>
         {state === "paused" && <PausedWindow returnToGame={returnToGame} />}

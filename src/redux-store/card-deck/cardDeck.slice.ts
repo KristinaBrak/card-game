@@ -43,7 +43,6 @@ export const fetchPokemons = createAsyncThunk(
     const result = await Promise.all(
       array.map((index) => fetchPokemon(`${POKEMON_URL}/${index}`))
     );
-    console.log({ result });
     return result;
   }
 );
@@ -58,7 +57,6 @@ const generateDeck = (pokemons: Pokemon[]) => {
     frontImage: pokemon.url,
   }));
   const shuffledDeck = shuffleDeck(cards);
-  console.log({ shuffledDeck });
   return shuffledDeck;
 };
 
