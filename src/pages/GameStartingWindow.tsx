@@ -11,18 +11,17 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { setLevel } from "../redux-store/game/game.slice";
 import {
   addUser,
   setCurrentUser,
-  User,
-} from "../redux-store/user/userList.slice";
-import { userListSelector } from "../redux-store/user/userList.selector";
-import { Difficulty, Level } from "../redux-store/game/game.types";
+  setLevel,
+} from "../redux-store/game/game.slice";
+import { Difficulty, Level, User } from "../redux-store/game/game.types";
+import { gameSelector } from "../redux-store/game/game.selector";
 
 const GameStartingWindow = () => {
   const [playerName, setPlayerName] = useState<string>("");
-  const { userList } = useSelector(userListSelector);
+  const { userList } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 

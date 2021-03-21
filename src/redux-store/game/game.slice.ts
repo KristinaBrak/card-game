@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { POKEMON_URL } from "../../consts";
+import { GAME_TIME_SEC, POKEMON_URL } from "../../consts";
 import { generateId, shuffleDeck } from "../../utils/helpers";
-import { Card, Difficulty, Level, Pokemon, TimeLeft } from "../game/game.types";
+import {
+  Card,
+  Difficulty,
+  Level,
+  Pokemon,
+  TimeLeft,
+  User,
+} from "../game/game.types";
 import { mapCard, roundTime } from "../game/game.utils";
 
 interface Game {
@@ -11,6 +18,7 @@ interface Game {
   fetchState: "successful" | "error" | "loading";
   level: Level;
   time: TimeLeft;
+  userList: User[];
 }
 
 const initialState: Game = {
@@ -28,6 +36,7 @@ const initialState: Game = {
     startTime: 0,
     timeSpent: 0,
   },
+  userList: [],
 };
 
 const fetchPokemon = async (url: string): Promise<Pokemon> => {
@@ -122,13 +131,13 @@ const { reducer: gameReducer, actions } = createSlice({
           state.time.timeSpent = 0;
           const startTime = new Date().getTime();
           state.time.startTime = roundTime(startTime);
+          state.score = 0;
           return;
         case "paused":
           const currentPausedTime = new Date().getTime();
           state.time.timeSpent = roundTime(
             state.time.startTime - currentPausedTime
           );
-          console.log(state.time.timeSpent);
           return;
         case "resumed":
           const currentTime = new Date().getTime();
@@ -138,6 +147,7 @@ const { reducer: gameReducer, actions } = createSlice({
         case "finished":
           const result = roundTime(new Date().getTime());
           state.time.timeSpent = result - state.time.startTime;
+          console.log({ result });
           return;
         default:
           return;
@@ -171,9 +181,17 @@ const { reducer: gameReducer, actions } = createSlice({
           state.score += state.level.pointValue;
           if (isCardDeckSolved(state.cards)) {
             state.gameState = "finished";
-            //add time score
-            //calculate score and reset time
-            state.score += state.time.timeSpent / 1000 * state.level.pointValue;
+            const timeSpent =
+              roundTime(new Date().getTime()) - state.time.startTime;
+            state.time.timeSpent = timeSpent;
+            const timeResult =
+              (GAME_TIME_SEC - timeSpent / 1000) * state.level.pointValue;
+            state.score += timeResult;
+            const updatedUserList = state.userList.map((user) =>
+              user.isCurrent ? { ...user, score: state.score } : user
+            );
+            state.userList = updatedUserList;
+            console.log(state.userList);
           }
         } else {
           state.cards = state.cards.map((card) =>
@@ -187,6 +205,24 @@ const { reducer: gameReducer, actions } = createSlice({
         }
         return card;
       });
+    },
+    addUser: (state, { payload }: PayloadAction<User>) => {
+      state.userList = [
+        ...state.userList,
+        {
+          name: payload.name,
+          isCurrent: payload.isCurrent,
+          score: payload.score,
+        },
+      ];
+      return state;
+    },
+    setCurrentUser: (state, { payload }: PayloadAction<User["name"]>) => {
+      state.userList.map((user) =>
+        user.name === payload
+          ? { ...user, isCurrent: true }
+          : { ...user, isCurrent: false }
+      );
     },
   },
   extraReducers: (builder) => {
@@ -213,5 +249,7 @@ export const {
   setLevel,
   setCardDeck,
   openCard,
+  addUser,
+  setCurrentUser,
 } = actions;
 export default gameReducer;

@@ -11,18 +11,16 @@ import {
 } from "@ionic/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { gameSelector } from "../redux-store/game/game.selector";
 import { resetScore, setState } from "../redux-store/game/game.slice";
-import { userListSelector } from "../redux-store/user/userList.selector";
-import { resetCurrentUser } from "../redux-store/user/userList.slice";
 
 const GameOverWindow = () => {
-  const { userList } = useSelector(userListSelector);
+  const { userList } = useSelector(gameSelector);
   const currentUser = userList.find((user) => user.isCurrent);
   const dispatch = useDispatch();
 
-  const resetGame = () => {
-    dispatch(resetCurrentUser());
-    dispatch(setState("started"));
+  const finishGame = () => {
+    dispatch(setState("finished"));
     dispatch(resetScore());
   };
 
@@ -48,14 +46,14 @@ const GameOverWindow = () => {
         <IonGrid>
           <IonRow className="ion-text-center">
             <IonCol>
-              <IonButton href="/leader-board" onClick={resetGame}>
+              <IonButton href="/leader-board" onClick={finishGame}>
                 Leader Board
               </IonButton>
             </IonCol>
           </IonRow>
           <IonRow className="ion-text-center">
             <IonCol>
-              <IonButton href="/home" onClick={resetGame}>
+              <IonButton href="/home" onClick={finishGame}>
                 Menu
               </IonButton>
             </IonCol>

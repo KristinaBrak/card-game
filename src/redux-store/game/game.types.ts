@@ -28,3 +28,13 @@ export interface TimeLeft {
   startTime: number;
   timeSpent: number;
 }
+
+export interface User {
+  name: string;
+  isCurrent: boolean;
+  score: number;
+}
+
+export interface UserList {
+  userList: User[];
+}

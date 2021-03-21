@@ -12,17 +12,12 @@ import { useHistory } from "react-router";
 import CardDeck from "../components/CardDeck";
 import PausedWindow from "../components/PausedWindow";
 import Timer from "../components/Timer";
-import { GAME_TIME_SEC } from "../consts";
 import { gameSelector } from "../redux-store/game/game.selector";
-import { addScore, setState } from "../redux-store/game/game.slice";
-import { Card } from "../redux-store/game/game.types";
-import { userListSelector } from "../redux-store/user/userList.selector";
-import { setCurrentUserScore } from "../redux-store/user/userList.slice";
+import { setState } from "../redux-store/game/game.slice";
 import "./Home.css";
 
 const Game: React.FC = () => {
-  const userList = useSelector(userListSelector);
-  const { gameState: state, score, level, time } = useSelector(gameSelector);
+  const { gameState: state, score } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -35,10 +30,6 @@ const Game: React.FC = () => {
       history.push("/game-over");
     }
   }, [state]);
-
-  const setGameFinished = () => {
-    dispatch(setState("finished"));
-  };
 
   const pauseGame = () => {
     dispatch(setState("paused"));
@@ -56,7 +47,7 @@ const Game: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <Timer/>
+        <Timer />
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck />
         <IonButton onClick={pauseGame}>Pause</IonButton>
