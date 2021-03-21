@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pokemon } from "./components/CardDeck";
+import { Pokemon } from "./redux-store/game/game.types";
 
 const usePokemonAPI = (url: string, limit: number) => {
   const [data, setData] = useState<Pokemon[]>([]);
@@ -12,7 +12,6 @@ const usePokemonAPI = (url: string, limit: number) => {
         return response.json();
       })
       .then((result) => {
-
         const pokemon: Pokemon = {
           name: result.name.toString(),
           url: result.sprites.other.dream_world.front_default.toString(),

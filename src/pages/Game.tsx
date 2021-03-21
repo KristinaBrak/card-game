@@ -25,7 +25,7 @@ const Game: React.FC = () => {
   const level = useSelector(levelDifficultySelector);
   const { time } = useSelector(timeLeftSelector);
   const userList = useSelector(userListSelector);
-  const { state, score } = useSelector(gameSelector);
+  const { gameState: state, score } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 

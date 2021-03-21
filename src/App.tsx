@@ -50,8 +50,8 @@ const App: React.FC = () => (
             <GameOverWindow />
           </Route>
           <Route exact path="/">
-            {/* <Redirect to="/home" /> */}
-            <Redirect to="/game" />
+            <Redirect to="/home" />
+            {/* <Redirect to="/game-over" /> */}
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

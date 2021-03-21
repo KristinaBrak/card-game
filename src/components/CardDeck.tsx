@@ -6,16 +6,12 @@ import { shuffleDeck, generateId } from "../utils/helpers";
 import { useSelector, useDispatch } from "react-redux";
 import { levelDifficultySelector } from "../redux-store/level-difficulty/levelDifficulty.selector";
 import {
-  Card,
   fetchPokemons,
+  openCard,
   setCardDeck,
-} from "../redux-store/card-deck/cardDeck.slice";
-import { cardDeckSelector } from "../redux-store/card-deck/cardDeck.selector";
-
-export interface Pokemon {
-  name: string;
-  url: string;
-}
+} from "../redux-store/game/game.slice";
+import { Card } from "../redux-store/game/game.types";
+import { gameSelector } from "../redux-store/game/game.selector";
 
 interface Props {
   scorePoints: () => void;
@@ -24,7 +20,7 @@ interface Props {
 
 const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
   const level = useSelector(levelDifficultySelector);
-  const { cardState, cards: cardDeck } = useSelector(cardDeckSelector);
+  const {fetchState, cards: cardDeck } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const [prevCard, setPrevCard] = useState<Card | undefined>(undefined);
 
@@ -35,7 +31,7 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
   const isGameFinished = () => {
     if (cardDeck.length > 0) {
       const count = cardDeck.reduce((acc, card) => {
-        if (!card.isOpened) {
+        if (card.cardState === "solved") {
           acc += 1;
         }
         return acc;
@@ -45,46 +41,22 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
     return false;
   };
 
-  useEffect(() => {
-    if (isGameFinished()) {
-      setGameFinished();
-    }
-  }, [cardDeck]);
-
+  //FIXME: put in Game
   const calculateScore = (type: Card["type"]) => {
     if (prevCard && type === prevCard.type) {
       scorePoints();
     }
   };
 
-  const updateDeck = (type: Card["type"]) => {
-    if (prevCard && type === prevCard.type) {
-      const updatedCards = cardDeck.map((card) =>
-        card.type === type ? { ...card, isOpened: false } : card
-      );
-      dispatch(setCardDeck(updatedCards));
-    }
+  const handleClick = (card: Card) => {
+    dispatch(openCard(card.id));
   };
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLIonCardElement, MouseEvent>,
-    card: Card
-  ) => {
-    event.preventDefault();
-    if (!prevCard) {
-      setPrevCard(card);
-    } else {
-      calculateScore(card.type);
-      updateDeck(card.type);
-      setPrevCard(undefined);
-    }
-  };
-
-  if (cardState === "loading") {
+  if (fetchState === "loading") {
     return <div>loading</div>;
   }
 
-  if (cardState === "error" && cardDeck === []) {
+  if (fetchState === "error" && cardDeck === []) {
     return <div>error</div>;
   }
 
@@ -101,11 +73,13 @@ const CardDeck: React.FC<Props> = ({ scorePoints, setGameFinished }) => {
         <IonCard
           key={card.id}
           style={{ width: "80px", height: "80px" }}
-          onClick={(event) => {
-            handleClick(event, card);
+          onClick={() => {
+            handleClick(card);
           }}
         >
-          <IonImg src={card.frontImage} />
+          {card.cardState !== "closed" ? (
+            <IonImg src={card.frontImage} />
+          ) : null}
         </IonCard>
       ))}
     </div>

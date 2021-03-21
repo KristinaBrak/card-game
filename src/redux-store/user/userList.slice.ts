@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import userEvent from "@testing-library/user-event";
 
 export interface User {
   name: string;
@@ -40,6 +41,13 @@ const { reducer: currentUserReducer, actions } = createSlice({
           : { ...user, isCurrent: false }
       );
     },
+    resetCurrentUser: (state) => {
+      const updatedList = state.userList.map((user) => ({
+        ...user,
+        isCurrent: false,
+      }));
+      state.userList = updatedList;
+    },
     setCurrentUserScore: (state, { payload }: PayloadAction<number>) => {
       const updatedList = state.userList.map((user) =>
         user.isCurrent ? { ...user, score: payload } : user
@@ -49,5 +57,10 @@ const { reducer: currentUserReducer, actions } = createSlice({
   },
 });
 
-export const { addUser, setCurrentUser, setCurrentUserScore } = actions;
+export const {
+  addUser,
+  setCurrentUser,
+  resetCurrentUser,
+  setCurrentUserScore,
+} = actions;
 export default currentUserReducer;
