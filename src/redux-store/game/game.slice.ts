@@ -191,7 +191,7 @@ const { reducer: gameReducer, actions } = createSlice({
               user.isCurrent ? { ...user, score: state.score } : user
             );
             state.userList = updatedUserList;
-            console.log(state.userList);
+            localStorage.setItem("userList", JSON.stringify(state.userList));
           }
         } else {
           state.cards = state.cards.map((card) =>

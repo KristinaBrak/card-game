@@ -10,11 +10,13 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React from "react";
-import { useSelector } from "react-redux";
-import { gameSelector } from "../redux-store/game/game.selector";
+import { User } from "../redux-store/game/game.types";
 
 const LeaderBoard = () => {
-  const { userList } = useSelector(gameSelector);
+  if (!localStorage.getItem("userList")) {
+    localStorage.setItem("userList", JSON.stringify([]));
+  }
+  const userList: User[] = JSON.parse(localStorage.getItem("userList") ?? "");
   const sortedUserList = [...userList].sort((a, b) => b.score - a.score);
 
   return (
@@ -26,7 +28,7 @@ const LeaderBoard = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonList>
-          {sortedUserList.length !== 0 ? (
+          {sortedUserList.length !== 0 && sortedUserList ? (
             sortedUserList.map((user) => (
               <IonItem key={user.name}>
                 <IonLabel>{user.name}</IonLabel>
@@ -34,7 +36,7 @@ const LeaderBoard = () => {
               </IonItem>
             ))
           ) : (
-            <IonTitle>No users played this game yet.</IonTitle>
+            <IonTitle>No scores yet.</IonTitle>
           )}
         </IonList>
         <IonButton href="/home">Menu</IonButton>
