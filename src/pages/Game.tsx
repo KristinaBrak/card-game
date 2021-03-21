@@ -10,7 +10,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import CardDeck from "../components/CardDeck";
-import PausedWindow from "../components/PausedWindow";
+import PausedWindow from "./PausedWindow";
 import Timer from "../components/Timer";
 import { gameSelector } from "../redux-store/game/game.selector";
 import { setState } from "../redux-store/game/game.slice";
@@ -33,10 +33,7 @@ const Game: React.FC = () => {
 
   const pauseGame = () => {
     dispatch(setState("paused"));
-  };
-
-  const returnToGame = () => {
-    dispatch(setState("resumed"));
+    history.push("/paused");
   };
 
   return (
@@ -51,7 +48,6 @@ const Game: React.FC = () => {
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck />
         <IonButton onClick={pauseGame}>Pause</IonButton>
-        {state === "paused" && <PausedWindow returnToGame={returnToGame} />}
       </IonContent>
     </IonPage>
   );

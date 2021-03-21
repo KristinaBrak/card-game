@@ -28,6 +28,7 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import GameOverWindow from "./pages/GameOverWindow";
+import PausedWindow from "./pages/PausedWindow";
 
 const App: React.FC = () => (
   <IonApp>
@@ -49,9 +50,11 @@ const App: React.FC = () => (
           <Route exact path="/game-over">
             <GameOverWindow />
           </Route>
+          <Route exact path="/paused">
+            <PausedWindow />
+          </Route>
           <Route exact path="/">
             <Redirect to="/home" />
-            {/* <Redirect to="/game-over" /> */}
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>
