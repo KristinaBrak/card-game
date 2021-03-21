@@ -16,38 +16,23 @@ import { GAME_TIME_SEC } from "../consts";
 import { gameSelector } from "../redux-store/game/game.selector";
 import { addScore, setState } from "../redux-store/game/game.slice";
 import { Card } from "../redux-store/game/game.types";
-import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
 import { userListSelector } from "../redux-store/user/userList.selector";
 import { setCurrentUserScore } from "../redux-store/user/userList.slice";
 import "./Home.css";
 
 const Game: React.FC = () => {
-  const { time } = useSelector(timeLeftSelector);
   const userList = useSelector(userListSelector);
-  const { gameState: state, score, level } = useSelector(gameSelector);
+  const { gameState: state, score, level, time } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const calculateTotalScore = () => {
-    const delta = time.timeSpent;
-    const result = time.timeSpent / 1000;
-    console.log({ delta });
-    console.log({ result });
-    const timeScore = (GAME_TIME_SEC - delta) * level.timeMultiply;
-    console.log({ timeScore });
-    // let totalScore: number = 0;
-    // if (timeScore < 0) {
-    //   totalScore = score;
-    // } else {
-    //   totalScore = timeScore + score;
-    // }
-    // dispatch(setCurrentUserScore(totalScore));
-    //find user, set user score to total score
-  };
+  useEffect(() => {
+    dispatch(setState("started"));
+  }, []);
 
   useEffect(() => {
     if (state === "finished") {
-      // history.push("/game-over");
+      history.push("/game-over");
     }
   }, [state]);
 
@@ -60,7 +45,7 @@ const Game: React.FC = () => {
   };
 
   const returnToGame = () => {
-    dispatch(setState("started"));
+    dispatch(setState("resumed"));
   };
 
   return (
@@ -71,11 +56,7 @@ const Game: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <Timer
-          isPaused={state === "paused"}
-          isFinished={state === "finished"}
-          setGameFinished={setGameFinished}
-        />
+        <Timer/>
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck />
         <IonButton onClick={pauseGame}>Pause</IonButton>

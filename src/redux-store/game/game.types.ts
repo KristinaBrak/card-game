@@ -23,3 +23,8 @@ export interface Level {
   timeMultiply: number;
   cardCount: number;
 }
+
+export interface TimeLeft {
+  startTime: number;
+  timeSpent: number;
+}

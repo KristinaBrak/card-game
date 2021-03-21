@@ -13,7 +13,7 @@ interface UserList {
 
 const initialState: UserList = {
   userList: [
-    { name: "Lola", isCurrent: true, score: 420 },
+    { name: "Lola", isCurrent: false, score: 420 },
     { name: "Vova", isCurrent: false, score: 456 },
     { name: "Shrek", isCurrent: false, score: 1006 },
   ],

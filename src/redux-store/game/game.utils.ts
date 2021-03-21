@@ -7,3 +7,7 @@ export const mapCard = (
 ) => {
   return card.cardState === from ? { ...card, cardState: to } : card;
 };
+
+export const roundTime = (timeMs: number) => {
+  return Math.floor(timeMs / 1000) * 1000;
+};

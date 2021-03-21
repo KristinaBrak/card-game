@@ -1,19 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { POKEMON_URL } from "../../consts";
 import { generateId, shuffleDeck } from "../../utils/helpers";
-import { Card, Difficulty, Level, Pokemon } from "../game/game.types";
-import { mapCard } from "../game/game.utils";
+import { Card, Difficulty, Level, Pokemon, TimeLeft } from "../game/game.types";
+import { mapCard, roundTime } from "../game/game.utils";
 
 interface Game {
-  gameState: "started" | "paused" | "finished";
+  gameState: "started" | "paused" | "resumed" | "finished";
   score: number;
   cards: Card[];
   fetchState: "successful" | "error" | "loading";
   level: Level;
+  time: TimeLeft;
 }
 
 const initialState: Game = {
-  gameState: "started",
+  gameState: "paused",
   score: 0,
   cards: [],
   fetchState: "loading",
@@ -22,6 +23,10 @@ const initialState: Game = {
     pointValue: 5,
     timeMultiply: 1,
     cardCount: 8,
+  },
+  time: {
+    startTime: 0,
+    timeSpent: 0,
   },
 };
 
@@ -109,11 +114,34 @@ const { reducer: gameReducer, actions } = createSlice({
   name: "game",
   initialState,
   reducers: {
-    setState: (
-      state,
-      { payload }: PayloadAction<"started" | "paused" | "finished">
-    ) => {
+    setState: (state, { payload }: PayloadAction<Game["gameState"]>) => {
       state.gameState = payload;
+      switch (payload) {
+        case "started":
+          state.time.startTime = 0;
+          state.time.timeSpent = 0;
+          const startTime = new Date().getTime();
+          state.time.startTime = roundTime(startTime);
+          return;
+        case "paused":
+          const currentPausedTime = new Date().getTime();
+          state.time.timeSpent = roundTime(
+            state.time.startTime - currentPausedTime
+          );
+          console.log(state.time.timeSpent);
+          return;
+        case "resumed":
+          const currentTime = new Date().getTime();
+          state.time.startTime = roundTime(currentTime + state.time.timeSpent);
+          state.time.timeSpent = 0;
+          return;
+        case "finished":
+          const result = roundTime(new Date().getTime());
+          state.time.timeSpent = result - state.time.startTime;
+          return;
+        default:
+          return;
+      }
     },
     addScore: (state, { payload }: PayloadAction<number>) => {
       state.score = state.score + payload;
@@ -128,7 +156,6 @@ const { reducer: gameReducer, actions } = createSlice({
       state.cards = payload;
     },
     openCard: (state, { payload: cardId }: PayloadAction<Card["id"]>) => {
-      console.log("opened card", cardId);
       const openCount = state.cards.reduce(
         (acc, card) => (card.cardState === "opened" ? acc + 1 : acc),
         0
@@ -145,6 +172,8 @@ const { reducer: gameReducer, actions } = createSlice({
           if (isCardDeckSolved(state.cards)) {
             state.gameState = "finished";
             //add time score
+            //calculate score and reset time
+            state.score += state.time.timeSpent / 1000 * state.level.pointValue;
           }
         } else {
           state.cards = state.cards.map((card) =>

@@ -1,23 +1,17 @@
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
   IonButton,
-  IonCardSubtitle,
-  IonGrid,
-  IonRow,
   IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonPage,
+  IonRow,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetScore, setState } from "../redux-store/game/game.slice";
-import { timeLeftSelector } from "../redux-store/time-left/timeLeft.selector";
-import { reset } from "../redux-store/time-left/timeLeft.slice";
 import { userListSelector } from "../redux-store/user/userList.selector";
 import { resetCurrentUser } from "../redux-store/user/userList.slice";
 
@@ -28,12 +22,11 @@ const GameOverWindow = () => {
 
   const resetGame = () => {
     dispatch(resetCurrentUser());
-    dispatch(reset());
     dispatch(setState("started"));
     dispatch(resetScore());
   };
+
   const tryAgain = () => {
-    dispatch(reset());
     dispatch(setState("started"));
     dispatch(resetScore());
   };
