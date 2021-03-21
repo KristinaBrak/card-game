@@ -11,7 +11,15 @@ export interface Card {
   frontImage: Pokemon["url"];
 }
 
-interface CardDeck {
-  cards: Card[];
-  cardState: "successful" | "error" | "loading";
+export enum Difficulty {
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
+}
+
+export interface Level {
+  name: Difficulty;
+  pointValue: number;
+  timeMultiply: number;
+  cardCount: number;
 }

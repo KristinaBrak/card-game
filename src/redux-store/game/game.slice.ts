@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { POKEMON_URL } from "../../consts";
 import { generateId, shuffleDeck } from "../../utils/helpers";
-import { Card, Pokemon } from "../game/game.types";
+import { Card, Difficulty, Level, Pokemon } from "../game/game.types";
 import { mapCard } from "../game/game.utils";
 
 interface Game {
@@ -9,6 +9,7 @@ interface Game {
   score: number;
   cards: Card[];
   fetchState: "successful" | "error" | "loading";
+  level: Level;
 }
 
 const initialState: Game = {
@@ -16,6 +17,12 @@ const initialState: Game = {
   score: 0,
   cards: [],
   fetchState: "loading",
+  level: {
+    name: Difficulty.EASY,
+    pointValue: 5,
+    timeMultiply: 1,
+    cardCount: 8,
+  },
 };
 
 const fetchPokemon = async (url: string): Promise<Pokemon> => {
@@ -43,6 +50,7 @@ export const fetchPokemons = createAsyncThunk(
     return result;
   }
 );
+
 const generateDeck = (pokemons: Pokemon[]) => {
   const pokemonDeck = pokemons.concat(pokemons);
   const cards: Card[] = pokemonDeck.map((pokemon) => ({
@@ -64,6 +72,39 @@ const isCardDeckSolved = (cards: Card[]): boolean => {
   return countSolved === cards.length;
 };
 
+const getLevelDifficultyDefinition = (difficultyName: Difficulty): Level => {
+  switch (difficultyName) {
+    case Difficulty.EASY:
+      return {
+        name: Difficulty.EASY,
+        pointValue: 5,
+        timeMultiply: 1,
+        cardCount: 8,
+      };
+    case Difficulty.MEDIUM:
+      return {
+        name: Difficulty.MEDIUM,
+        pointValue: 5,
+        timeMultiply: 2,
+        cardCount: 12,
+      };
+    case Difficulty.HARD:
+      return {
+        name: Difficulty.HARD,
+        pointValue: 5,
+        timeMultiply: 3,
+        cardCount: 16,
+      };
+    default:
+      return {
+        name: Difficulty.EASY,
+        pointValue: 5,
+        timeMultiply: 1,
+        cardCount: 8,
+      };
+  }
+};
+
 const { reducer: gameReducer, actions } = createSlice({
   name: "game",
   initialState,
@@ -79,6 +120,9 @@ const { reducer: gameReducer, actions } = createSlice({
     },
     resetScore: (state) => {
       state.score = 0;
+    },
+    setLevel: (state, { payload }: PayloadAction<Level["name"]>) => {
+      state.level = getLevelDifficultyDefinition(payload);
     },
     setCardDeck: (state, { payload }: PayloadAction<Card[]>) => {
       state.cards = payload;
@@ -97,8 +141,10 @@ const { reducer: gameReducer, actions } = createSlice({
           state.cards = state.cards.map((card) =>
             mapCard(card, "opened", "solved")
           );
+          state.score += state.level.pointValue;
           if (isCardDeckSolved(state.cards)) {
             state.gameState = "finished";
+            //add time score
           }
         } else {
           state.cards = state.cards.map((card) =>
@@ -135,6 +181,7 @@ export const {
   setState,
   addScore,
   resetScore,
+  setLevel,
   setCardDeck,
   openCard,
 } = actions;

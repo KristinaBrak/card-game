@@ -11,17 +11,14 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import {
-  changeDifficulty,
-  Difficulty,
-  LevelDefinition,
-} from "../redux-store/level-difficulty/levelDifficulty.slice";
+import { setLevel } from "../redux-store/game/game.slice";
 import {
   addUser,
   setCurrentUser,
   User,
 } from "../redux-store/user/userList.slice";
 import { userListSelector } from "../redux-store/user/userList.selector";
+import { Difficulty, Level } from "../redux-store/game/game.types";
 
 const GameStartingWindow = () => {
   const [playerName, setPlayerName] = useState<string>("");
@@ -39,8 +36,8 @@ const GameStartingWindow = () => {
     }
   };
 
-  const openGame = (name: LevelDefinition["name"]) => {
-    dispatch(changeDifficulty(name));
+  const openGame = (name: Level["name"]) => {
+    dispatch(setLevel(name));
     saveCurrentUser();
     history.push("/game");
   };
