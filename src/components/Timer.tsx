@@ -1,7 +1,7 @@
 import { IonTitle } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DELAY_TIME_SEC, GAME_TIME_SEC } from "../consts";
+import { GAME_TIME_SEC } from "../consts";
 import { gameSelector } from "../redux-store/game/game.selector";
 import { setState } from "../redux-store/game/game.slice";
 
@@ -12,7 +12,7 @@ const Timer = () => {
 
   const getTimeLeft = () => {
     const timeLeft = new Date().getTime() - time.startTime;
-    return DELAY_TIME_SEC + GAME_TIME_SEC - Math.floor(timeLeft / 1000);
+    return GAME_TIME_SEC - Math.floor(timeLeft / 1000);
   };
 
   useEffect(() => {

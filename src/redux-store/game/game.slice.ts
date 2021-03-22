@@ -141,7 +141,7 @@ const { reducer: gameReducer, actions } = createSlice({
           return;
         case "resumed":
           const currentTime = new Date().getTime();
-          state.time.startTime = roundTime(currentTime + state.time.timeSpent);
+          state.time.startTime = roundTime(currentTime - state.time.timeSpent);
           state.time.timeSpent = 0;
           return;
         case "finished":
