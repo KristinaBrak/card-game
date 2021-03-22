@@ -56,13 +56,25 @@ const GameStartingWindow = () => {
             onIonChange={(event) => setPlayerName(event.detail.value!)}
           />
         </IonItem>
-        <IonItem disabled={!!!playerName}>
-          <IonButton onClick={() => openGame(Difficulty.EASY)}>Easy</IonButton>
-          <IonButton onClick={() => openGame(Difficulty.MEDIUM)}>
-            Medium
-          </IonButton>
-          <IonButton onClick={() => openGame(Difficulty.HARD)}>Hard</IonButton>
-        </IonItem>
+
+        <IonButton
+          onClick={() => openGame(Difficulty.EASY)}
+          disabled={!!!playerName}
+        >
+          Easy
+        </IonButton>
+        <IonButton
+          onClick={() => openGame(Difficulty.MEDIUM)}
+          disabled={!!!playerName}
+        >
+          Medium
+        </IonButton>
+        <IonButton
+          onClick={() => openGame(Difficulty.HARD)}
+          disabled={!!!playerName}
+        >
+          Hard
+        </IonButton>
       </IonContent>
     </IonPage>
   );
