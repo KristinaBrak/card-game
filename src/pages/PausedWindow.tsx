@@ -19,7 +19,7 @@ const PausedWindow = () => {
   const { time } = useSelector(gameSelector);
   const currentTime = new Date().getTime();
   const timeLeft =
-    GAME_TIME_SEC - Math.floor((currentTime - time.startTime) / 1000);
+    GAME_TIME_SEC - Math.floor((currentTime - time.startTimeMs) / 1000);
 
   const resumeGame = () => {
     dispatch(setState("resumed"));

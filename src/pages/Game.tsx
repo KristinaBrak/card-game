@@ -6,24 +6,34 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import CardDeck from "../components/CardDeck";
-import PausedWindow from "./PausedWindow";
 import Timer from "../components/Timer";
 import { gameSelector } from "../redux-store/game/game.selector";
-import { setState } from "../redux-store/game/game.slice";
+import { decrementDelay, setState } from "../redux-store/game/game.slice";
 import "./Home.css";
 
 const Game: React.FC = () => {
-  const { gameState: state, score } = useSelector(gameSelector);
+  const { gameState: state, score, time } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(setState("started"));
+    dispatch(setState("delayStarted"));
   }, []);
+
+  useEffect(() => {
+    if (state === "delayStarted" && time.delaySec >= 0) {
+      const timer = setTimeout(() => {
+        dispatch(decrementDelay());
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  });
 
   useEffect(() => {
     if (state === "finished") {
@@ -44,10 +54,16 @@ const Game: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <Timer />
+        {state === "delayStarted" ? (
+          <IonTitle>Game starts in: {time.delaySec}</IonTitle>
+        ) : (
+          <Timer />
+        )}
         <IonTitle>Score: {score}</IonTitle>
         <CardDeck />
-        <IonButton onClick={pauseGame}>Pause</IonButton>
+        <IonButton onClick={pauseGame} disabled={state === "delayStarted"}>
+          Pause
+        </IonButton>
       </IonContent>
     </IonPage>
   );

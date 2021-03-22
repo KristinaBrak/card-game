@@ -25,7 +25,7 @@ const GameOverWindow = () => {
   };
 
   const tryAgain = () => {
-    dispatch(setState("started"));
+    dispatch(setState("delayStarted"));
     dispatch(resetScore());
   };
 

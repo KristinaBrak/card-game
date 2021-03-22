@@ -11,7 +11,7 @@ const Timer = () => {
   const [timeLeft, setTimeLeft] = useState<number>();
 
   const getTimeLeft = () => {
-    const timeLeft = new Date().getTime() - time.startTime;
+    const timeLeft = new Date().getTime() - time.startTimeMs;
     return GAME_TIME_SEC - Math.floor(timeLeft / 1000);
   };
 

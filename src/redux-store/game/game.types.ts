@@ -25,8 +25,9 @@ export interface Level {
 }
 
 export interface TimeLeft {
-  startTime: number;
-  timeSpent: number;
+  startTimeMs: number;
+  timeSpentMs: number;
+  delaySec: number;
 }
 
 export interface User {

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GAME_TIME_SEC, POKEMON_URL } from "../../consts";
+import { DELAY_TIME_SEC, GAME_TIME_SEC, POKEMON_URL } from "../../consts";
 import { generateId, shuffleDeck } from "../../utils/helpers";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
 import { mapCard, roundTime } from "../game/game.utils";
 
 interface Game {
-  gameState: "started" | "paused" | "resumed" | "finished";
+  gameState: "delayStarted" | "started" | "paused" | "resumed" | "finished";
   score: number;
   cards: Card[];
   fetchState: "successful" | "error" | "loading";
@@ -33,8 +33,9 @@ const initialState: Game = {
     cardCount: 8,
   },
   time: {
-    startTime: 0,
-    timeSpent: 0,
+    startTimeMs: 0,
+    timeSpentMs: 0,
+    delaySec: DELAY_TIME_SEC,
   },
   userList: [],
 };
@@ -70,7 +71,7 @@ const generateDeck = (pokemons: Pokemon[]) => {
   const cards: Card[] = pokemonDeck.map((pokemon) => ({
     id: generateId(),
     type: pokemon.name,
-    cardState: "closed",
+    cardState: "opened",
     backImage: "../assets/backside.jpeg",
     frontImage: pokemon.url,
   }));
@@ -126,27 +127,38 @@ const { reducer: gameReducer, actions } = createSlice({
     setState: (state, { payload }: PayloadAction<Game["gameState"]>) => {
       state.gameState = payload;
       switch (payload) {
+        case "delayStarted":
+          state.time.delaySec = DELAY_TIME_SEC;
+          state.cards = state.cards.map((card) =>
+            mapCard(card, "closed", "opened")
+          );
+          return;
         case "started":
-          state.time.startTime = 0;
-          state.time.timeSpent = 0;
+          state.time.startTimeMs = 0;
+          state.time.timeSpentMs = 0;
           const startTime = new Date().getTime();
-          state.time.startTime = roundTime(startTime);
+          state.time.startTimeMs = roundTime(startTime);
           state.score = 0;
+          state.cards = state.cards.map((card) =>
+            mapCard(card, "opened", "closed")
+          );
           return;
         case "paused":
           const currentPausedTime = new Date().getTime();
-          state.time.timeSpent = roundTime(
-            currentPausedTime - state.time.startTime
+          state.time.timeSpentMs = roundTime(
+            currentPausedTime - state.time.startTimeMs
           );
           return;
         case "resumed":
           const currentTime = new Date().getTime();
-          state.time.startTime = roundTime(currentTime - state.time.timeSpent);
-          state.time.timeSpent = 0;
+          state.time.startTimeMs = roundTime(
+            currentTime - state.time.timeSpentMs
+          );
+          state.time.timeSpentMs = 0;
           return;
         case "finished":
           const result = roundTime(new Date().getTime());
-          state.time.timeSpent = result - state.time.startTime;
+          state.time.timeSpentMs = result - state.time.startTimeMs;
           return;
         default:
           return;
@@ -181,8 +193,8 @@ const { reducer: gameReducer, actions } = createSlice({
           if (isCardDeckSolved(state.cards)) {
             state.gameState = "finished";
             const timeSpent =
-              roundTime(new Date().getTime()) - state.time.startTime;
-            state.time.timeSpent = timeSpent;
+              roundTime(new Date().getTime()) - state.time.startTimeMs;
+            state.time.timeSpentMs = timeSpent;
             const timeResult =
               (GAME_TIME_SEC - timeSpent / 1000) * state.level.pointValue;
             state.score += timeResult;
@@ -223,6 +235,18 @@ const { reducer: gameReducer, actions } = createSlice({
           : { ...user, isCurrent: false }
       );
     },
+    decrementDelay: (state) => {
+      state.time.delaySec = state.time.delaySec - 1;
+      if (state.time.delaySec <= 0) {
+        state.cards = state.cards.map((card) =>
+          mapCard(card, "opened", "closed")
+        );
+        const startTime = new Date().getTime();
+        state.time.startTimeMs = roundTime(startTime);
+        state.score = 0;
+        state.gameState = "started";
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -249,6 +273,7 @@ export const {
   setCardDeck,
   openCard,
   addUser,
+  decrementDelay,
   setCurrentUser,
 } = actions;
 export default gameReducer;
