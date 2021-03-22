@@ -11,22 +11,31 @@ import {
 } from "@ionic/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { gameSelector } from "../redux-store/game/game.selector";
-import { resetScore, setState } from "../redux-store/game/game.slice";
+import {
+  fetchPokemons,
+  resetScore,
+  setState,
+} from "../redux-store/game/game.slice";
 
 const GameOverWindow = () => {
-  const { userList } = useSelector(gameSelector);
+  const { userList, level } = useSelector(gameSelector);
   const currentUser = userList.find((user) => user.isCurrent);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const finishGame = () => {
     dispatch(setState("finished"));
     dispatch(resetScore());
+    history.push("/home");
   };
 
   const tryAgain = () => {
     dispatch(setState("delayStarted"));
     dispatch(resetScore());
+    dispatch(fetchPokemons(level.cardCount));
+    history.push("/game");
   };
 
   return (
@@ -53,16 +62,12 @@ const GameOverWindow = () => {
           </IonRow>
           <IonRow className="ion-text-center">
             <IonCol>
-              <IonButton href="/home" onClick={finishGame}>
-                Menu
-              </IonButton>
+              <IonButton onClick={finishGame}>Menu</IonButton>
             </IonCol>
           </IonRow>
           <IonRow className="ion-text-center">
             <IonCol>
-              <IonButton href="/game" onClick={tryAgain}>
-                Try again
-              </IonButton>
+              <IonButton onClick={tryAgain}>Try again</IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>

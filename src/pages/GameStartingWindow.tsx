@@ -8,12 +8,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
   addUser,
-  setCurrentUser,
+  initializeUsers,
   setLevel,
 } from "../redux-store/game/game.slice";
 import { Difficulty, Level, User } from "../redux-store/game/game.types";
@@ -25,14 +25,12 @@ const GameStartingWindow = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  useEffect(() => {
+    dispatch(initializeUsers());
+  }, []);
+
   const saveCurrentUser = () => {
-    const foundUser = userList.find((user) => user.name === playerName);
-    if (!foundUser) {
-      const newUser: User = { name: playerName, isCurrent: true, score: 0 };
-      dispatch(addUser(newUser));
-    } else {
-      dispatch(setCurrentUser(playerName));
-    }
+    dispatch(addUser(playerName));
   };
 
   const openGame = (name: Level["name"]) => {

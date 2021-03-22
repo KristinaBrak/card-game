@@ -28,7 +28,7 @@ const PausedWindow = () => {
 
   const finishGame = () => {
     dispatch(setState("finished"));
-    history.push("/home");
+    history.push("/");
   };
 
   return (

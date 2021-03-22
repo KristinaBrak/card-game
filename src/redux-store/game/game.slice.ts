@@ -202,7 +202,7 @@ const { reducer: gameReducer, actions } = createSlice({
               user.isCurrent ? { ...user, score: state.score } : user
             );
             state.userList = updatedUserList;
-            localStorage.setItem("userList", JSON.stringify(state.userList));
+            localStorage.setItem("userList", JSON.stringify(updatedUserList));
           }
         } else {
           state.cards = state.cards.map((card) =>
@@ -217,23 +217,38 @@ const { reducer: gameReducer, actions } = createSlice({
         return card;
       });
     },
-    addUser: (state, { payload }: PayloadAction<User>) => {
-      state.userList = [
-        ...state.userList,
-        {
-          name: payload.name,
-          isCurrent: payload.isCurrent,
-          score: payload.score,
-        },
-      ];
-      return state;
+    addUser: (state, { payload }: PayloadAction<User["name"]>) => {
+      const foundUser = state.userList.find((user) => user.name === payload);
+      if (!foundUser) {
+        const newUser = {
+          name: payload,
+          isCurrent: true,
+          score: 0,
+        };
+        const updatedList: User[] = state.userList.map((user) => ({
+          ...user,
+          isCurrent: false,
+        }));
+        updatedList.push(newUser);
+        state.userList = updatedList;
+        localStorage.setItem("userList", JSON.stringify(updatedList));
+      } else {
+        const updatedUserList = state.userList.map((user) =>
+          user.name === payload
+            ? { ...user, isCurrent: true }
+            : { ...user, isCurrent: false }
+        );
+        state.userList = updatedUserList;
+        localStorage.setItem("userList", JSON.stringify(updatedUserList));
+      }
     },
-    setCurrentUser: (state, { payload }: PayloadAction<User["name"]>) => {
-      state.userList.map((user) =>
-        user.name === payload
-          ? { ...user, isCurrent: true }
-          : { ...user, isCurrent: false }
-      );
+    initializeUsers: (state) => {
+      const foundUsers = localStorage.getItem("userList");
+      if (!foundUsers) {
+        localStorage.setItem("userList", JSON.stringify([]));
+      }
+      const users: User[] = JSON.parse(localStorage.getItem("userList")!);
+      state.userList = users;
     },
     decrementDelay: (state) => {
       state.time.delaySec = state.time.delaySec - 1;
@@ -248,6 +263,7 @@ const { reducer: gameReducer, actions } = createSlice({
       }
     },
   },
+
   extraReducers: (builder) => {
     builder.addCase(
       fetchPokemons.fulfilled,
@@ -273,7 +289,7 @@ export const {
   setCardDeck,
   openCard,
   addUser,
+  initializeUsers,
   decrementDelay,
-  setCurrentUser,
 } = actions;
 export default gameReducer;
