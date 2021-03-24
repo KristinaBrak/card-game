@@ -18,7 +18,7 @@ const CardDeck = () => {
   };
 
   if (fetchState === "loading") {
-    return <div>loading</div>;
+    return <div>Loading...</div>;
   }
 
   if (fetchState === "error" && cardDeck === []) {

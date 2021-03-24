@@ -7,6 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Home.css";
+import ExitButton from "../components/ExitButton";
 
 const Home: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <IonButton href="/game-start">Play</IonButton>
         <IonButton href="/leader-board">Leader Board</IonButton>
-        <IonButton>Exit</IonButton>
+        <ExitButton />
       </IonContent>
     </IonPage>
   );

@@ -26,7 +26,7 @@ const PausedWindow = () => {
     history.push("/game");
   };
 
-  const finishGame = () => {
+  const quitGame = () => {
     dispatch(setState("finished"));
     history.push("/");
   };
@@ -40,8 +40,8 @@ const PausedWindow = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonTitle>Time remain: {timeLeft}</IonTitle>
-        <IonButton onClick={resumeGame}>Return</IonButton>
-        <IonButton onClick={finishGame}>Exit</IonButton>
+        <IonButton onClick={resumeGame}>Resume</IonButton>
+        <IonButton onClick={quitGame}>Quit</IonButton>
       </IonContent>
     </IonPage>
   );
