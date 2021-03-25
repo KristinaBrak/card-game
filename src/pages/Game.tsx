@@ -5,7 +5,10 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButtons,
+  IonIcon,
 } from "@ionic/react";
+import { pause } from "ionicons/icons";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -49,21 +52,32 @@ const Game: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Card Game</IonTitle>
+        <IonToolbar mode="ios" color="medium">
+          <IonTitle class="ion-text-center" color="light">
+            Score: {score}
+          </IonTitle>
+          <IonButtons slot="end" color="primary">
+            <IonButton onClick={pauseGame} disabled={state === "delayStarted"}>
+              <IonIcon
+                slot="icon-only"
+                icon={pause}
+                color="primary"
+                size="large"
+              />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         {state === "delayStarted" ? (
-          <IonTitle>Game starts in: {time.delaySec}</IonTitle>
+          <IonTitle class="ion-text-center" color="primary">
+            Game starts in: {time.delaySec}
+          </IonTitle>
         ) : (
           <Timer />
         )}
-        <IonTitle>Score: {score}</IonTitle>
+
         <CardDeck />
-        <IonButton onClick={pauseGame} disabled={state === "delayStarted"}>
-          Pause
-        </IonButton>
       </IonContent>
     </IonPage>
   );

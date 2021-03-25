@@ -5,6 +5,7 @@ import {
   IonInput,
   IonItem,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -16,12 +17,11 @@ import {
   initializeUsers,
   setLevel,
 } from "../redux-store/game/game.slice";
-import { Difficulty, Level, User } from "../redux-store/game/game.types";
-import { gameSelector } from "../redux-store/game/game.selector";
+import { Difficulty, Level } from "../redux-store/game/game.types";
+import "./GameStartingWindow.css";
 
 const GameStartingWindow = () => {
   const [playerName, setPlayerName] = useState<string>("");
-  const { userList } = useSelector(gameSelector);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -42,8 +42,10 @@ const GameStartingWindow = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Card Game</IonTitle>
+        <IonToolbar color="medium">
+          <IonTitle class="ion-text-center" color="light">
+            Card Game
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -54,25 +56,29 @@ const GameStartingWindow = () => {
             onIonChange={(event) => setPlayerName(event.detail.value!)}
           />
         </IonItem>
-
-        <IonButton
-          onClick={() => openGame(Difficulty.EASY)}
-          disabled={!!!playerName}
-        >
-          Easy
-        </IonButton>
-        <IonButton
-          onClick={() => openGame(Difficulty.MEDIUM)}
-          disabled={!!!playerName}
-        >
-          Medium
-        </IonButton>
-        <IonButton
-          onClick={() => openGame(Difficulty.HARD)}
-          disabled={!!!playerName}
-        >
-          Hard
-        </IonButton>
+        <div className="level-buttons">
+          <IonButton
+            onClick={() => openGame(Difficulty.EASY)}
+            disabled={!playerName}
+            color="light"
+          >
+            <IonText color="dark">Easy</IonText>
+          </IonButton>
+          <IonButton
+            onClick={() => openGame(Difficulty.MEDIUM)}
+            disabled={!playerName}
+            color="light"
+          >
+            <IonText color="dark">Medium</IonText>
+          </IonButton>
+          <IonButton
+            onClick={() => openGame(Difficulty.HARD)}
+            disabled={!playerName}
+            color="light"
+          >
+            <IonText color="dark">Hard</IonText>
+          </IonButton>
+        </div>
       </IonContent>
     </IonPage>
   );

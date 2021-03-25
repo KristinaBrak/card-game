@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DELAY_TIME_SEC, GAME_TIME_SEC, POKEMON_URL } from "../../consts";
+import {
+  CARD_BACKSIDE_URL,
+  DELAY_TIME_SEC,
+  GAME_TIME_SEC,
+  POKEMON_URL,
+} from "../../consts";
 import { generateId, shuffleDeck } from "../../utils/helpers";
 import {
   Card,
@@ -72,7 +77,7 @@ const generateDeck = (pokemons: Pokemon[]) => {
     id: generateId(),
     type: pokemon.name,
     cardState: "opened",
-    backImage: "../assets/backside.jpeg",
+    backImage: CARD_BACKSIDE_URL,
     frontImage: pokemon.url,
   }));
   const shuffledDeck = shuffleDeck(cards);

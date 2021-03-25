@@ -41,7 +41,7 @@ const GameOverWindow = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="light">
           <IonTitle>Game Over</IonTitle>
         </IonToolbar>
       </IonHeader>

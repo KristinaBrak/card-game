@@ -44,7 +44,9 @@ const CardDeck = () => {
         >
           {card.cardState !== "closed" ? (
             <IonImg src={card.frontImage} />
-          ) : null}
+          ) : (
+            <IonImg src={card.backImage} />
+          )}
         </IonCard>
       ))}
     </div>

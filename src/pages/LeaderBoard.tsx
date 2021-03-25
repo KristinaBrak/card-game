@@ -1,7 +1,9 @@
 import {
   IonButton,
+  IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
@@ -11,6 +13,7 @@ import {
 } from "@ionic/react";
 import React from "react";
 import { User } from "../redux-store/game/game.types";
+import { menu } from "ionicons/icons";
 
 const LeaderBoard = () => {
   if (!localStorage.getItem("userList")) {
@@ -22,8 +25,15 @@ const LeaderBoard = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Leader Board</IonTitle>
+        <IonToolbar color="medium">
+          <IonTitle color="light" class="ion-text-center">
+            Leader Board
+          </IonTitle>
+          <IonButtons slot="end">
+            <IonButton href="/home">
+              <IonIcon slot="icon-only" icon={menu} color="light" />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -39,7 +49,6 @@ const LeaderBoard = () => {
             <IonTitle>No scores yet.</IonTitle>
           )}
         </IonList>
-        <IonButton href="/home">Menu</IonButton>
       </IonContent>
     </IonPage>
   );

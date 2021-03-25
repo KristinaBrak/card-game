@@ -32,7 +32,11 @@ const Timer = () => {
     }
   }, [timeLeft]);
 
-  return <IonTitle>Time left: {timeLeft}</IonTitle>;
+  return (
+    <IonTitle color="primary" class="ion-text-center">
+      Time left: {timeLeft}
+    </IonTitle>
+  );
 };
 
 export default Timer;

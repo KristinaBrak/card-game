@@ -1,11 +1,18 @@
 import {
   IonButton,
+  IonButtons,
+  IonCard,
+  IonCardHeader,
+  IonCardSubtitle,
   IonContent,
   IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
+  IonCardTitle,
 } from "@ionic/react";
+import { arrowBack, close } from "ionicons/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -34,14 +41,41 @@ const PausedWindow = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Paused Game</IonTitle>
+        <IonToolbar mode="ios" color="medium">
+          <IonButtons slot="start">
+            <IonButton onClick={resumeGame}>
+              <IonIcon
+                slot="icon-only"
+                icon={arrowBack}
+                size="large"
+                color="secondary"
+              />
+            </IonButton>
+          </IonButtons>
+          <IonButtons slot="end">
+            <IonButton onClick={quitGame}>
+              <IonIcon
+                slot="icon-only"
+                icon={close}
+                size="large"
+                color="secondary"
+              />
+            </IonButton>
+          </IonButtons>
+          <IonTitle color="light">Pause</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonTitle>Time remain: {timeLeft}</IonTitle>
-        <IonButton onClick={resumeGame}>Resume</IonButton>
-        <IonButton onClick={quitGame}>Quit</IonButton>
+      <IonContent>
+        <IonCard color="light">
+          <IonCardHeader>
+            <IonCardSubtitle class="ion-text-center" color="dark">
+              Time remain
+            </IonCardSubtitle>
+            <IonCardTitle class="ion-text-center" color="dark">
+              {timeLeft}
+            </IonCardTitle>
+          </IonCardHeader>
+        </IonCard>
       </IonContent>
     </IonPage>
   );
