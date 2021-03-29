@@ -11,6 +11,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { arrowBack } from "ionicons/icons";
 import React from "react";
 import { User } from "../redux-store/game/game.types";
 import { menu } from "ionicons/icons";
@@ -25,13 +26,13 @@ const LeaderBoard = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="medium">
+        <IonToolbar color="medium" mode="ios">
           <IonTitle color="light" class="ion-text-center">
             Leader Board
           </IonTitle>
-          <IonButtons slot="end">
+          <IonButtons slot="start">
             <IonButton href="/home">
-              <IonIcon slot="icon-only" icon={menu} color="light" />
+              <IonIcon slot="icon-only" icon={arrowBack} color="light" />
             </IonButton>
           </IonButtons>
         </IonToolbar>

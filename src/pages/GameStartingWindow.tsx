@@ -10,7 +10,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import {
   addUser,
@@ -42,7 +42,7 @@ const GameStartingWindow = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="medium">
+        <IonToolbar color="medium" mode="ios">
           <IonTitle class="ion-text-center" color="light">
             Card Game
           </IonTitle>

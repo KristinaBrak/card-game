@@ -1,4 +1,4 @@
-import { IonTitle } from "@ionic/react";
+import { IonText } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GAME_TIME_SEC } from "../consts";
@@ -33,9 +33,9 @@ const Timer = () => {
   }, [timeLeft]);
 
   return (
-    <IonTitle color="primary" class="ion-text-center">
-      Time left: {timeLeft}
-    </IonTitle>
+    <IonText class="ion-text-center" color="primary">
+      <h1> Time left: {timeLeft}</h1>
+    </IonText>
   );
 };
 

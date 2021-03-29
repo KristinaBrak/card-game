@@ -37,10 +37,11 @@ const CardDeck = () => {
       {cardDeck.map((card) => (
         <IonCard
           key={card.id}
-          style={{ width: "80px", height: "80px" }}
+          style={{ width: "60px", height: "60px" }}
           onClick={() => {
             handleClick(card);
           }}
+          mode="md"
         >
           {card.cardState !== "closed" ? (
             <IonImg src={card.frontImage} />

@@ -6,6 +6,7 @@ import {
   IonTitle,
   IonToolbar,
   IonText,
+  isPlatform,
 } from "@ionic/react";
 import "./Home.css";
 import ExitButton from "../components/ExitButton";
@@ -14,7 +15,7 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="medium">
+        <IonToolbar color="medium" mode="ios">
           <IonTitle class="ion-text-center" color="light">
             Card Game
           </IonTitle>
@@ -22,13 +23,13 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <div className="buttons">
-          <IonButton href="/game-start" color="light">
+          <IonButton href="/game-start" color="light" routerDirection="none">
             <IonText color="dark">Play</IonText>
           </IonButton>
-          <IonButton href="/leader-board" color="light">
+          <IonButton href="/leader-board" color="light" routerDirection="none">
             <IonText color="dark">Leader Board</IonText>
           </IonButton>
-          <ExitButton />
+          {isPlatform("android") ? <ExitButton /> : null}
         </div>
       </IonContent>
     </IonPage>

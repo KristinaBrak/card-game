@@ -7,6 +7,7 @@ import {
   IonToolbar,
   IonButtons,
   IonIcon,
+  IonText,
 } from "@ionic/react";
 import { pause } from "ionicons/icons";
 import React, { useEffect } from "react";
@@ -70,9 +71,9 @@ const Game: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         {state === "delayStarted" ? (
-          <IonTitle class="ion-text-center" color="primary">
-            Game starts in: {time.delaySec}
-          </IonTitle>
+          <IonText class="ion-text-center" color="primary">
+            <h1> Game starts in: {time.delaySec}</h1>
+          </IonText>
         ) : (
           <Timer />
         )}
